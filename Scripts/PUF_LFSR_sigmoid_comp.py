@@ -77,10 +77,10 @@ plt.title("PUF relu")
 plt.scatter(x_values_float, relu_puf_float, label="PUF relu values")
 plt.legend()
 plt.grid()
-# Plot actual relu
-relu_x_pts = np.linspace(-1, 1, 100)
-relu_y_pts = [0]*50 + list(np.linspace(0,1,50))
-plt.plot(relu_x_pts, relu_y_pts, 'r', label="ReLU exact")
+# Plot actual sigm
+sgm_x_pts = np.linspace(-1,1,100)
+sgm_y_pts = sigmoid(sgm_x_pts)
+plt.plot(sgm_x_pts, sgm_y_pts, 'r', label="Sigmoid exact")
 
 ## LFSR
 plt.figure(2)
@@ -88,21 +88,22 @@ plt.title("LFSR relu")
 plt.scatter(x_values_float, relu_lfsr_float, label="LFSR relu values")
 plt.legend()
 plt.grid()
-# Plot actual relu
-relu_x_pts = np.linspace(-1, 1, 100)
-relu_y_pts = [0]*50 + list(np.linspace(0,1,50))
-plt.plot(relu_x_pts, relu_y_pts, 'r', label="ReLU exact")
+# Plot actual sigm
+sgm_x_pts = np.linspace(-1,1,100)
+sgm_y_pts = sigmoid(sgm_x_pts)
+plt.plot(sgm_x_pts, sgm_y_pts, 'r', label="Sigmoid exact")
 
 
 ################ Get MSE #####################
-mse_puf = mean_squared_error(relu_y_pts, relu_puf_float)
-mae_puf = mean_absolute_error(relu_y_pts, relu_puf_float)
+mse_puf = mean_squared_error(sgm_y_pts, relu_puf_float)
+mae_puf = mean_absolute_error(sgm_y_pts, relu_puf_float)
 print("MSE PUF=", mse_puf)
 print("MAE PUF=", mae_puf)
 
-mse_lfsr = mean_squared_error(relu_y_pts, relu_lfsr_float)
-mae_lfsr = mean_absolute_error(relu_y_pts, relu_lfsr_float)
+mse_lfsr = mean_squared_error(sgm_y_pts, relu_lfsr_float)
+mae_lfsr = mean_absolute_error(sgm_y_pts, relu_lfsr_float)
 print("MSE LFSR=", mse_lfsr)
 print("MAE LFSR=", mae_lfsr)
+
 
 plt.show()

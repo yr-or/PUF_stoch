@@ -3,7 +3,7 @@
 (* keep_hierarchy = "yes" *)
 (* DONT_TOUCH = "yes" *)
 (* keep = "true" *)
-module RO_PUF_2(
+module RO_PUF_2_feedback(
     input clk,
     input reset,
     input enable,
@@ -24,8 +24,9 @@ module RO_PUF_2(
     );
 
     // Ring oscillators 7
-    RO7 ro2(
+    RO7_xor_feedback ro2(
         .en                 (enable),
+        .xor_2              (par_out5[4]),
         .parallel_out       (par_out7)
     );
 

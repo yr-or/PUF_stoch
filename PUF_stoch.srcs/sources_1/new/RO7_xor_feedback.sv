@@ -4,8 +4,9 @@
 (* keep_hierarchy = "yes" *)
 (* DONT_TOUCH = "yes" *)
 (* keep = "true" *)
-module RO7(
+module RO7_xor_feedback(
     input en,
+    input xor_2,
     output [6:0] parallel_out
 );
     
@@ -29,7 +30,7 @@ module RO7(
     end
 
     // Create NOT gates
-    assign not1 = ~latch_out7;
+    assign not1 = ~(latch_out7 ^ xor_2);
     assign not2 = ~latch_out1;
     assign not3 = ~latch_out2;
     assign not4 = ~latch_out3;

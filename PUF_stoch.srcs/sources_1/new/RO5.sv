@@ -2,6 +2,8 @@
 // Based on: https://ieeexplore.ieee.org/document/7195665 and https://github.com/stnolting/neoTRNG?tab=readme-ov-file
 
 (* keep_hierarchy = "yes" *)
+(* DONT_TOUCH = "yes" *)
+(* keep = "true" *)
 module RO5(
     input en,
     output [4:0] parallel_out
