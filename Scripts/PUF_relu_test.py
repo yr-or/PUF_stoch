@@ -5,11 +5,10 @@ For comparing outputs of PUF to mult
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.metrics import r2_score
-import re
+from sklearn.metrics import mean_squared_error
 
 ############### Read ILA data ################
-file1 = r"C:\Users\Rory\Documents\HDL\PUF_Stoch\Outputs\PUF_relu_test3.csv"
+file1 = r"C:\Users\Rory\Documents\HDL\PUF_Stoch\Outputs\PUF_relu_test2.csv"
 
 df1 = pd.read_csv(file1)
 
@@ -62,15 +61,17 @@ relu_out_float = [int8_to_unipolar(x) for x in relu_out_int8]
 ############### Plot results #################
 plt.figure(1)
 plt.title("ReLU test RO_PUF")
-plt.scatter(x_values_float, relu_out_float)
-plt.axline( (-1,0), (0,0), color='r' )
-plt.axline( (0,0), (1,1), color='r' )
+plt.scatter(x_values_float, relu_out_float, label="ReLU PUF")
 plt.grid()
+# Plot actual relu
+relu_x_pts = np.linspace(-1, 1, 200)
+relu_y_pts = [0]*100 + list(np.linspace(0,1,100))
+plt.plot(relu_x_pts, relu_y_pts, 'r', label="ReLU exact")
 
 
-############### Get Metrics ###############
-#r2 = r2_score(mul_res_float, mul_res_ila_float)
-#print(f"R^2 score: {r2}")
+################ Get MSE #####################
+mse = mean_squared_error(relu_y_pts, relu_out_float)
+print("MSE =", mse)
 
 
 

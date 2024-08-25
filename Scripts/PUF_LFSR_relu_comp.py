@@ -5,8 +5,7 @@ For comparing outputs implemented PUF and LFSR ReLU FSMs
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.metrics import mean_absolute_error
-import re
+from sklearn.metrics import mean_squared_error
 
 ############### Read ILA data from impl Layer2 ################
 file1 = r"C:\Users\Rory\Documents\HDL\PUF_stoch\Outputs\PUF_LFSR_relu_comp_test1.csv"
@@ -71,6 +70,10 @@ plt.title("PUF relu")
 plt.scatter(x_values_float, relu_puf_float, label="PUF relu values")
 plt.legend()
 plt.grid()
+# Plot actual relu
+relu_x_pts = np.linspace(-1, 1, 100)
+relu_y_pts = [0]*50 + list(np.linspace(0,1,50))
+plt.plot(relu_x_pts, relu_y_pts, 'r', label="ReLU exact")
 
 ## LFSR
 plt.figure(2)
@@ -79,5 +82,18 @@ plt.title("LFSR relu")
 plt.scatter(x_values_float, relu_lfsr_float, label="LFSR relu values")
 plt.legend()
 plt.grid()
+# Plot actual relu
+relu_x_pts = np.linspace(-1, 1, 100)
+relu_y_pts = [0]*50 + list(np.linspace(0,1,50))
+plt.plot(relu_x_pts, relu_y_pts, 'r', label="ReLU exact")
+
+
+################ Get MSE #####################
+mse_puf = mean_squared_error(relu_y_pts, relu_puf_float)
+print("MSE PUF=", mse_puf)
+
+mse_lfsr = mean_squared_error(relu_y_pts, relu_lfsr_float)
+print("MSE LFSR=", mse_lfsr)
+
 
 plt.show()
