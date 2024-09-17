@@ -13,11 +13,10 @@ module SNG_RO
     reg bit_stream_ff;
     wire [7:0] rand_num;
 
-    // RO_RNG
-    RO_PUF_2_feedback rng(
+
+    ///////////  RO_RNG ///////////
+    RO_PUF_5_top rng(
         .clk                    (clk),
-        .reset                  (reset),
-        .enable                 (enable),
         .rand_num               (rand_num)
     );
 

@@ -1,5 +1,5 @@
 """
-For comparing outputs of PUF to mult
+For comparing outputs of PUF to sigmoid
 """
 
 import matplotlib.pyplot as plt
@@ -8,11 +8,9 @@ import pandas as pd
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 ############### Read ILA data ################
-# PUF_relu_test2.csv:           last
-# PUF_feedback_relu_test1.csv:  feedback PUF
-# test4:                        RO_PUF_4 test with relu
+# PUF_sigmoid_test2:            RO_PUF_4 with sigmoid FSM
 
-file1 = r"C:\Users\Rory\Documents\HDL\PUF_Stoch\Outputs\PUF_feedback_relu_test1.csv"
+file1 = r"C:\Users\Rory\Documents\HDL\PUF_Stoch\Outputs\PUF_feedback_sigmoid_test1.csv"
 
 df1 = pd.read_csv(file1)
 
@@ -29,11 +27,11 @@ row_index_done = (df[df['done[0:0]'] == 1].index)
 data = df.iloc[row_index_done, 5:]
 
 ## ILA results
-#relu_out_int8 = data.loc[:, "relu_out[0][7:0]":"relu_out[199][7:0]"].values.tolist()[0]
-relu_out_int8 = [0]*200
+#sigmoid_out_int8 = data.loc[:, "sigmoid_out[0][7:0]":"sigmoid_out[199][7:0]"].values.tolist()[0]
+sigmoid_out_int8 = [0]*200
 for i in range(200):
     ind = f"relu_out[{i}][7:0]"
-    relu_out_int8[i] = data.loc[:, ind].values.tolist()[0]
+    sigmoid_out_int8[i] = data.loc[:, ind].values.tolist()[0]
 
 
 ############ Functions #################
@@ -55,6 +53,12 @@ def prob_int16_to_bipolar(x):
 def int8_to_unipolar(x):
 	return x/256
 
+def sigmoid(x):
+	return 1 / (1 + np.exp(-4*x))
+
+N = 5
+def tanh(x):
+     return (np.exp(2*(N/2)*x) - 1) / (np.exp(2*(N/2)*x) + 1)
 
 
 ############ Python data #################
@@ -63,25 +67,25 @@ x_values_int8 = [250, 47, 191, 225, 118, 27, 72, 235, 116, 5, 230, 242, 73, 57, 
 x_values_float = [ prob_int_to_bipolar(x) for x in x_values_int8 ]
 
 ############### ILA data #################
-relu_out_float = [int8_to_unipolar(x) for x in relu_out_int8]
+sigmoid_out_float = [prob_int_to_bipolar(x) for x in sigmoid_out_int8]
 
 
 ############### Plot results #################
 plt.figure(1)
-plt.title("ReLU test RO_PUF")
-plt.scatter(x_values_float, relu_out_float, label="ReLU PUF")
+plt.title("Sigmoig test RO_PUF")
+plt.scatter(x_values_float, sigmoid_out_float, label="Sigmoid PUF")
 plt.grid()
-# Plot actual relu
-relu_x_pts = np.linspace(-1, 1, 200)
-relu_y_pts = [0]*100 + list(np.linspace(0,1,100))
-plt.plot(relu_x_pts, relu_y_pts, 'r', label="ReLU exact")
+# Plot actual sigmoid
+sgm_x_pts = np.linspace(-1,1,200)
+sgm_y_pts = tanh(sgm_x_pts)
+plt.plot(sgm_x_pts, sgm_y_pts, 'r', label="Sigmoid exact")
 
 
 ################ Get MSE #####################
-mse = mean_squared_error(relu_y_pts, relu_out_float)
+mse = mean_squared_error(sgm_y_pts, sigmoid_out_float)
 print("MSE =", mse)
 
-mae = mean_absolute_error(relu_y_pts, relu_out_float)
+mae = mean_absolute_error(sgm_y_pts, sigmoid_out_float)
 print("MAE =", mae)
 
 

@@ -51,13 +51,13 @@ module PUF_LFSR_relu_comp(
 
     generate
         for (i=0; i<NUM_TESTS; i=i+1) begin
-            Sigmoid_FSM sig1(
+            Sigmoid_FSM fsm1(
                 .clk                (clk),
                 .reset              (reset),
                 .in_stoch           (stoch_num_puf[i]),
                 .out_stoch          (relu1_out_stoch[i])
             );
-            Sigmoid_FSM sig2(
+            Sigmoid_FSM fsm2(
                 .clk                (clk),
                 .reset              (reset),
                 .in_stoch           (stoch_num_lfsr[i]),

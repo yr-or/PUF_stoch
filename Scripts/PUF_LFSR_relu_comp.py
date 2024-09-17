@@ -12,7 +12,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 # PUF_LFSR_relu_comp_test1.csv:     Added extra stage to relu FSM
 # PUF_LFSR_sigmoid_comp_test1.csv:  Using standard sigmoid FSM
 
-file1 = r"C:\Users\Rory\Documents\HDL\PUF_stoch\Outputs\PUF_LFSR_sigmoid_comp_test1.csv"
+file1 = r"C:\Users\Rory\Documents\HDL\PUF_stoch\Outputs\PUF_LFSR_relu_comp_test1.csv"
 
 df1 = pd.read_csv(file1)
 

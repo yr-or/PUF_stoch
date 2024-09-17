@@ -10,7 +10,9 @@ from sklearn.metrics import mean_squared_error
 ############### Read ILA data ################
 # PUF_rand_test1.csv:           Original 5/7 PUF
 # PUF_feedback_rand_test1.csv:  Feedback 5/7 PUF
-file1 = r"C:\Users\Rory\Documents\HDL\PUF_Stoch\Outputs\PUF_feedback_rand_test1.csv"
+# PUF_rand_test2:               RO_PUF_4 rand distr test
+
+file1 = r"C:\Users\Rory\Documents\HDL\PUF_Stoch\Outputs\PUF_rand_test2.csv"
 
 df1 = pd.read_csv(file1)
 
@@ -27,7 +29,16 @@ row_index_done = (df[df['done[0:0]'] == 1].index)
 data = df.iloc[row_index_done, 5:]
 
 ## ILA results
-puf_out_int8 = data.loc[:, "stb_out[0][7:0]":"stb_out[199][7:0]"].values.tolist()[0]
+#puf_out_int8 = data.loc[:, "stb_out[0][7:0]":"stb_out[199][7:0]"].values.tolist()[0]
+puf_out_int8 = [0]*200
+for i in range(200):
+    ind = f"stb_out[{i}][7:0]"
+    puf_out_int8[i] = data.loc[:, ind].values.tolist()[0]
+
+########### Write to binary file #########
+with open("puf_3_data_binary.e", "w+") as f:
+    for val in puf_out_int8:
+        f.write( '{0:08b}\n'.format(val) )
 
 
 ############ Functions #################
@@ -59,12 +70,12 @@ x_values_int8 = [250, 47, 191, 225, 118, 27, 72, 235, 116, 5, 230, 242, 73, 57, 
 bins = [i for i in range(0,255,16)]
 bins.append(256)
 
-plt.figure(1)
+plt.figure(figsize=(10,10))
 plt.hist(puf_out_int8, bins=bins, color='tab:blue', edgecolor='black')
 plt.xticks(bins)
-plt.title("Random Number distribution")
-plt.xlabel("Values")
-plt.ylabel("No. values")
+plt.title("Random Number distribution PUF_RNG_1")
+plt.xlabel("Value")
+plt.ylabel("No. of occurances")
 plt.show()
 
 

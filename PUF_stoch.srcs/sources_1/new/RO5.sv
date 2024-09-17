@@ -5,33 +5,18 @@
 (* DONT_TOUCH = "yes" *)
 (* keep = "true" *)
 module RO5(
-    input en,
     output [4:0] parallel_out
 );
     
-    // Design: 5 NOT gates with transparent D-latches in between
     // Internal wires
-    reg latch_out1, latch_out2, latch_out3, latch_out4, latch_out5;
-    wire not1, not2, not3, not4, not5;
-
-    // Create latches
-    always @(*) begin
-        if (en) begin
-            // When enabled, latch passes input to output
-            latch_out1 = not1;
-            latch_out2 = not2;
-            latch_out3 = not3;
-            latch_out4 = not4;
-            latch_out5 = not5;
-        end
-    end
+    (* keep = "true" *) wire not1, not2, not3, not4, not5;
 
     // Create NOT gates
-    assign not1 = ~latch_out5;
-    assign not2 = ~latch_out1;
-    assign not3 = ~latch_out2;
-    assign not4 = ~latch_out3;
-    assign not5 = ~latch_out4;
+    assign not1 = ~not5;
+    assign not2 = ~not1;
+    assign not3 = ~not2;
+    assign not4 = ~not3;
+    assign not5 = ~not4;
 
     // Output
     assign parallel_out = {not1, not2, not3, not4, not5};

@@ -9,21 +9,9 @@ from sklearn.metrics import r2_score, mean_squared_error
 import re
 
 ############### Read ILA data ################
-# PUF_mult_test1:   Normal PUF
-# PUF_mult_test2:   5/3 PUF with no latches
-# PUF_mult_test3:   5/3 PUF with no latches and feedback XOR gate
-# test4:            5/3 PUF with 16-bit output truncated to 8-bit, i.e. should be same as test2
-# test5:            RO_PUF_4
-# test6:            RO_PUF_4 with feedback in RO7
+# LFSR_mult_test1:      standard 8-bit lfsr
 
-### Thesis Tests ###
-# RO_PUF_2_mult_test1.csv       5/7 PUF interconnected
-# RO_PUF_2_mult_test2.csv       second run of same test
-# RO_PUF_4_mult_test1           5/7 x8 PUF
-# RO_PUF_4_mult_test2           second run
-# RO_PUF_5_mult_test1           new ro with fib/gal
-
-file1 = r"C:\Users\Rory\Documents\HDL\PUF_Stoch\Outputs\RO_PUF_2_mult_test1.csv"
+file1 = r"C:\Users\Rory\Documents\HDL\PUF_Stoch\Outputs\LFSR_mult_test1.csv"
 
 df1 = pd.read_csv(file1)
 
@@ -40,12 +28,10 @@ row_index_done = (df[df['done[0:0]'] == 1].index)
 data = df.iloc[row_index_done, 5:]
 
 ## ILA results
-#mul_out_int8 = data.loc[:, "mul_out[0][7:0]":"mul_out[49][7:0]"].values.tolist()[0]
 mul_out_int8 = [0]*50
 for i in range(50):
     ind = f"mul_out[{i}][7:0]"
     mul_out_int8[i] = data.loc[:, ind].values.tolist()[0]
-
 
 ############ Functions #################
 def bipolar_to_prob(y):
@@ -64,9 +50,8 @@ def prob_int16_to_bipolar(x):
     return prob_to_bipolar(x/65536)
 
 
-
 ############ Python data #################
-num1_tests = [163, 149, 98, 109, 131, 46, 183, 22, 243, 121, 151, 186, 152, 9, 131, 208, 207, 111, 105, 179, 165, 156, 149, 218, 175, 125, 188, 187, 86, 49, 215, 95, 241, 196, 245, 187, 66, 172, 162, 75, 161, 168, 141, 121, 205, 46, 160, 0, 63, 129]
+num1_tests = [163, 149, 98, 109, 131, 46, 183, 22, 243, 121, 151, 186, 152, 9, 131, 208, 207, 111, 105, 179, 165, 156, 149, 218, 175, 125, 188, 187, 86, 49, 215, 95, 241, 196, 245, 187, 66, 172, 162, 75, 161, 168, 141, 121, 205, 46, 160, 1, 63, 129]
 num2_tests = [10, 241, 139, 249, 142, 98, 3, 33, 178, 242, 115, 127, 231, 171, 179, 132, 32, 15, 128, 2, 222, 49, 249, 6, 110, 54, 83, 213, 151, 171, 52, 174, 217, 149, 132, 11, 190, 194, 228, 70, 69, 159, 48, 225, 153, 5, 85, 133, 208, 254]
 
 num1_float = [ prob_int_to_bipolar(x) for x in num1_tests ]
@@ -79,7 +64,7 @@ mul_res_ila_float = [prob_int_to_bipolar(x) for x in mul_out_int8]
 
 ############### Plot results #################
 plt.figure(figsize=(10,10))
-plt.title("Multiply test PUF_RNG_2")
+plt.title("Multiply test LFSR")
 plt.scatter(mul_res_float, mul_res_ila_float)
 plt.axline( (-1,-1), (1,1), color='r' )
 plt.xlabel("Expected value")
@@ -95,6 +80,27 @@ print(f"R^2 score: {r2}")
 mse = mean_squared_error(mul_res_float, mul_res_ila_float)
 print("MSE =", mse)
 
+"""
+## SCC
+scc_tests = []
+for i in range(len(num1_tests)):
+    scc = 0
+    px = bipolar_to_prob(num1_float[i])
+    py = bipolar_to_prob(num2_float[i])
+    px_and_y = bipolar_to_prob(mul_res_ila_float[i])
+    pxpy = px*py
+    if (px_and_y > pxpy):
+        scc = (px_and_y - pxpy)/ ((min(px,py))-pxpy)
+    else:
+        scc = (px_and_y - pxpy)/ (pxpy - max(px+py-1, 0))
+    scc_tests.append(scc)
+
+# Plot SCC
+plt.figure(2)
+xvals = [i for i in range(len(num1_tests))]
+plt.plot(xvals, scc_tests)
+plt.grid()
+"""
 
 
 plt.show()

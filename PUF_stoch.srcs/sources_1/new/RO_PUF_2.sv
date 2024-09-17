@@ -5,8 +5,6 @@
 (* keep = "true" *)
 module RO_PUF_2(
     input clk,
-    input reset,
-    input enable,
     output [7:0] rand_num
     );
 
@@ -19,13 +17,11 @@ module RO_PUF_2(
 
     // Ring oscillators 5
     RO5 ro1(
-        .en                 (enable),
         .parallel_out       (par_out5)
     );
 
     // Ring oscillators 7
     RO7 ro2(
-        .en                 (enable),
         .parallel_out       (par_out7)
     );
 

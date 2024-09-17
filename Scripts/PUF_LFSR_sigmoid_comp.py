@@ -61,10 +61,13 @@ def int8_to_unipolar(x):
 def sigmoid(x):
 	return 1 / (1 + np.exp(-4*x))
 
+N = 5
+def tanh(x):
+     return (np.exp(2*(N/2)*x) - 1) / (np.exp(2*(N/2)*x) + 1)
 
 # Convert vivado values to floats
-relu_puf_float = [int8_to_unipolar(x) for x in relu_puf_int8]
-relu_lfsr_float = [int8_to_unipolar(x) for x in relu_lfsr_int8]
+relu_puf_float = [prob_int_to_bipolar(x) for x in relu_puf_int8]
+relu_lfsr_float = [prob_int_to_bipolar(x) for x in relu_lfsr_int8]
 
 x_values_int8 = [11, 120, 148, 9, 82, 203, 89, 167, 227, 3, 161, 251, 195, 15, 93, 173, 247, 146, 59, 92, 127, 18, 169, 130, 39, 225, 34, 212, 125, 201, 96, 151, 88, 45, 35, 65, 120, 71, 183, 119, 58, 24, 12, 183, 87, 173, 227, 222, 43, 42, 229, 220, 149, 65, 239, 141, 135, 185, 44, 89, 105, 76, 129, 142, 89, 148, 74, 59, 9, 227, 56, 18, 168, 34, 249, 8, 55, 140, 176, 74, 206, 6, 110, 3, 39, 79, 65, 197, 49, 177, 76, 222, 116, 36, 236, 90, 39, 109, 133, 233]
 x_values_float = [prob_int_to_bipolar(x) for x in x_values_int8]
@@ -79,7 +82,7 @@ plt.legend()
 plt.grid()
 # Plot actual sigm
 sgm_x_pts = np.linspace(-1,1,100)
-sgm_y_pts = sigmoid(sgm_x_pts)
+sgm_y_pts = tanh(sgm_x_pts)
 plt.plot(sgm_x_pts, sgm_y_pts, 'r', label="Sigmoid exact")
 
 ## LFSR
@@ -90,7 +93,7 @@ plt.legend()
 plt.grid()
 # Plot actual sigm
 sgm_x_pts = np.linspace(-1,1,100)
-sgm_y_pts = sigmoid(sgm_x_pts)
+sgm_y_pts = tanh(sgm_x_pts)
 plt.plot(sgm_x_pts, sgm_y_pts, 'r', label="Sigmoid exact")
 
 

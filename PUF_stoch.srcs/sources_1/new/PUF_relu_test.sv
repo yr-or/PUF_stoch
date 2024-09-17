@@ -40,7 +40,7 @@ module PUF_relu_test(
     // Relu FSM
     generate
         for (i=0; i<NUM_TESTS; i=i+1) begin
-            ReLU_FSM relu1(
+            ReLU_FSM relu1(                     // Change to relu or sigmoid here
                 .clk                (clk),
                 .reset              (reset),
                 .in_stoch           (num_stoch[i]),

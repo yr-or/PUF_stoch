@@ -1,6 +1,4 @@
-// Hardware testbench for testing LFSR SNG with mutliplier
-
-module LFSR_SNG_mult_test(
+module Squaring_test(
     input sys_clk
     );
 
@@ -9,10 +7,10 @@ module LFSR_SNG_mult_test(
     // wires
     wire reset;
     wire clk;
-    wire enable;
     assign clk = sys_clk;
 
     wire done [0:NUM_TESTS-1];
+    wire enable;
 
     wire [7:0] mul_out [0:NUM_TESTS-1];
 
@@ -23,40 +21,27 @@ module LFSR_SNG_mult_test(
 
     // Inputs
     reg [7:0] num1_tests [0:NUM_TESTS-1] = '{163, 149, 98, 109, 131, 46, 183, 22, 243, 121, 151, 186, 152, 9, 131, 208, 207, 111, 105, 179, 165, 156, 149, 218, 175, 125, 188, 187, 86, 49, 215, 95, 241, 196, 245, 187, 66, 172, 162, 75, 161, 168, 141, 121, 205, 46, 160, 0, 63, 129};
-    reg [7:0] num2_tests [0:NUM_TESTS-1] = '{10, 241, 139, 249, 142, 98, 3, 33, 178, 242, 115, 127, 231, 171, 179, 132, 32, 15, 128, 2, 222, 49, 249, 6, 110, 54, 83, 213, 151, 171, 52, 174, 217, 149, 132, 11, 190, 194, 228, 70, 69, 159, 48, 225, 153, 5, 85, 133, 208, 254};
 
-    // SNG seeds
-    reg [7:0] SNG1_seeds [0:NUM_TESTS-1] = '{226, 110, 107, 86, 80, 69, 13, 200, 15, 158, 138, 55, 132, 231, 138, 26, 131, 39, 181, 92, 218, 157, 99, 72, 71, 171, 51, 35, 230, 194, 254, 253, 175, 127, 119, 123, 26, 97, 132, 164, 234, 48, 41, 205, 34, 216, 143, 229, 212, 91};
-    reg [7:0] SNG2_seeds [0:NUM_TESTS-1] = '{23, 131, 203, 204, 109, 161, 242, 184, 33, 219, 207, 197, 183, 38, 164, 226, 19, 147, 68, 120, 186, 71, 101, 16, 166, 123, 102, 187, 94, 53, 242, 18, 60, 156, 237, 127, 101, 230, 33, 116, 176, 148, 83, 34, 41, 161, 37, 165, 247, 70};
-
-    // SNG 1
+    // RO_SNG 1
     genvar i;
     generate
         for (i=0; i<NUM_TESTS; i=i+1) begin
-            StochNumGen sng1(
+            SNG_RO ro_sng1(
                 .clk                (clk),
                 .reset              (reset),
-                //.seed               (SNG1_seeds[i]),
-                .seed               (8'd52),
+                .enable             (enable),
                 .prob               (num1_tests[i]),
                 .stoch_num          (num1_stoch[i])
             );
         end
     endgenerate
 
-    // SNG 1   
-    generate
-        for (i=0; i<NUM_TESTS; i=i+1) begin
-            StochNumGen sng2(
-                .clk                (clk),
-                .reset              (reset),
-                //.seed               (SNG2_seeds[i]),
-                .seed               (8'd53),
-                .prob               (num2_tests[i]),
-                .stoch_num          (num2_stoch[i])
-            );
-        end
-    endgenerate
+    // Isolation FF
+    reg delay_ff [0:NUM_TESTS-1];
+    always @(posedge clk) begin
+        delay_ff <= num1_stoch;
+    end
+    assign num2_stoch = delay_ff;
 
     // Mult
     generate
